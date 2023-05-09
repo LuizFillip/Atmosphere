@@ -1,4 +1,6 @@
 import numpy as np 
+from GEO import year_fraction
+import pyIGRF
 
 class effective_wind(object):
     
@@ -14,13 +16,13 @@ class effective_wind(object):
     """
     
     @staticmethod
-    def eff_zonal(zon, mer, D): 
+    def zonal(zon, mer, D): 
         D = np.deg2rad(D)
         # Ueff_y (positiva para leste)
         return (zon * np.cos(D) + mer * np.sin(D))
     
     @staticmethod
-    def eff_meridional(zon, mer, D, I):
+    def meridional(zon, mer, D, I):
         D = np.deg2rad(D)
         I = np.deg2rad(I)
         # Ueff_x (positiva para sul)
@@ -29,3 +31,29 @@ class effective_wind(object):
                 ) * np.cos(I)
 
 
+def effective_wind_on_FT(df, dn):
+
+    dec = []
+    inc = []
+    
+    for lat, lon, alt in zip(df.glat, df.glon, df.alt):
+        d, i, h, x, y, z, f = pyIGRF.igrf_value(
+            lat, 
+            lon, 
+            alt = alt, 
+            year = year_fraction(dn)
+            )
+        
+        dec.append(d)
+        inc.append(i)
+        
+    df["d"] = dec
+    df["i"] = inc
+    
+    wind = effective_wind()
+    
+    df["zon_ef"] = wind.zonal(df["U"], df["V"], df["d"])
+    df["mer_ef"] = wind.meridional(df["U"], df["V"], 
+                                   df["d"], df["i"])
+    
+    return df

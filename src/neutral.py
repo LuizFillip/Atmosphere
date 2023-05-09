@@ -1,5 +1,3 @@
-import numpy as np
-
 
 def recombination_rate(O2, N2):
     """Recombination chemistry rate coefficient"""
