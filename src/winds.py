@@ -30,14 +30,12 @@ class effective_wind(object):
             mer * np.cos(D) + zon * np.sin(D)
                 ) * np.cos(I)
 
-
-def effective_wind_on_FT(df, dn):
-
+def get_run_igrf(df, dn):
     dec = []
     inc = []
-    
+    total = []
     for lat, lon, alt in zip(df.glat, df.glon, df.alt):
-        d, i, h, x, y, z, f = pyIGRF.igrf_value(
+        d, i, _, _, _, _, f = pyIGRF.igrf_value(
             lat, 
             lon, 
             alt = alt, 
@@ -46,9 +44,17 @@ def effective_wind_on_FT(df, dn):
         
         dec.append(d)
         inc.append(i)
+        total.append(f)
+        
+    return dec, inc, total
+
+def effective_winds_on_FT(df, dn):
+    
+    dec, inc, total = get_run_igrf(df, dn)
         
     df["d"] = dec
     df["i"] = inc
+    df["H"] = total
     
     wind = effective_wind()
     
