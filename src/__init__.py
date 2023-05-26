@@ -1,2 +1,5 @@
-from .winds import effective_wind, effective_wind_on_FT
-from .neutral import recombination_rate
+from .winds import effective_wind, fluxtube_eff_wind, local_eff_wind
+from .neutral import recombination_rate, recombination2
+
+
+from .plotting import *

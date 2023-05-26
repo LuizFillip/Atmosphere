@@ -1,5 +1,5 @@
 import numpy as np 
-from GEO import year_fraction
+from GEO import year_fraction, sites
 import pyIGRF
 
 class effective_wind(object):
@@ -30,7 +30,7 @@ class effective_wind(object):
             mer * np.cos(D) + zon * np.sin(D)
                 ) * np.cos(I)
 
-def get_run_igrf(df, dn):
+def run_igrf(df, dn):
     dec = []
     inc = []
     total = []
@@ -48,9 +48,9 @@ def get_run_igrf(df, dn):
         
     return dec, inc, total
 
-def effective_winds_on_FT(df, dn):
+def fluxtube_eff_wind(df, dn):
     
-    dec, inc, total = get_run_igrf(df, dn)
+    dec, inc, total = run_igrf(df, dn)
         
     df["d"] = dec
     df["i"] = inc
@@ -58,8 +58,44 @@ def effective_winds_on_FT(df, dn):
     
     wind = effective_wind()
     
-    df["zon_ef"] = wind.zonal(df["U"], df["V"], df["d"])
-    df["mer_ef"] = wind.meridional(df["U"], df["V"], 
-                                   df["d"], df["i"])
+    df["zon_ef"] = wind.zonal(
+        df["zon"], df["mer"], df["d"]
+        )
+    df["mer_ef"] = wind.meridional(
+        df["zon"], df["mer"], 
+        df["d"], df["i"]
+        )
+    
+    return df
+
+def local_eff_wind(df, site = "saa"):
+    lat, lon = sites[site]["coords"]
+    dec = []
+    inc = []
+    
+    for alt in df.alt:
+        dn = df.index[0]
+        d, i, _, _, _, _, f = pyIGRF.igrf_value(
+            lat, 
+            lon, 
+            alt = alt, 
+            year = year_fraction(dn)
+            )
+        
+        dec.append(d)
+        inc.append(i)
+        
+    df["d"] = dec
+    df["i"] = inc
+    
+    wind = effective_wind()
+    
+    df["zon_ef"] = wind.zonal(
+        df["zon"], df["mer"], df["d"]
+        )
+    df["mer_ef"] = wind.meridional(
+        df["zon"], df["mer"], 
+        df["d"], df["i"]
+        )
     
     return df
