@@ -1,15 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue May  9 10:46:03 2023
-
-@author: Luiz
-"""
-
-src/__pycache__/
-src/plotting/__pycache__/
-src/example/
-src/test_foo.py
-__init__.py
-*.for
-__pycache__/
-site
+src/__pycache__/*
+src/plotting/__pycache__/*
+src/example/*
+/__pycache__/*
