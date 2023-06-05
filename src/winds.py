@@ -25,10 +25,19 @@ class effective_wind(object):
     def meridional(zon, mer, D, I):
         D = np.deg2rad(D)
         I = np.deg2rad(I)
-        # Ueff_x (positiva para sul)
+        # Ueff_x (positiva para norte)
         return (
             mer * np.cos(D) + zon * np.sin(D)
                 ) * np.cos(I)
+    
+    @staticmethod
+    def meridional_perp(zon, mer, D, I):
+        D = np.deg2rad(D)
+        I = np.deg2rad(I)
+        # Ueff_x (positiva para norte)
+        return (
+            mer * np.cos(D) + zon * np.sin(D)
+                ) * np.sin(I)
 
 def run_igrf(df, dn):
     dec = []
@@ -93,7 +102,7 @@ def local_eff_wind(df, site = "saa"):
     df["zon_ef"] = wind.zonal(
         df["zon"], df["mer"], df["d"]
         )
-    df["mer_ef"] = wind.meridional(
+    df["mer_ef"] = wind.meridional_perp(
         df["zon"], df["mer"], 
         df["d"], df["i"]
         )
