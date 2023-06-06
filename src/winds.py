@@ -22,7 +22,9 @@ class effective_wind(object):
         return (zon * np.cos(D) + mer * np.sin(D))
     
     @staticmethod
-    def meridional(zon, mer, D, I):
+    def meridional_parl(zon, mer, D, I):
+        """Componente paralela a B"""
+        
         D = np.deg2rad(D)
         I = np.deg2rad(I)
         # Ueff_x (positiva para norte)
@@ -32,6 +34,7 @@ class effective_wind(object):
     
     @staticmethod
     def meridional_perp(zon, mer, D, I):
+        """Componente perpendicular a B"""
         D = np.deg2rad(D)
         I = np.deg2rad(I)
         # Ueff_x (positiva para norte)
