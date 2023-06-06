@@ -1,4 +1,3 @@
-src/__pycache__/*
-src/plotting/__pycache__/*
-src/example/*
+/src/__pycache__/*
+/src/plotting/__pycache__/*
 /__pycache__/*
