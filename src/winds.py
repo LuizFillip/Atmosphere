@@ -1,6 +1,8 @@
 import numpy as np 
 from GEO import year_fraction, sites
 import pyIGRF
+import models as m
+
 
 class effective_wind(object):
     
@@ -42,27 +44,11 @@ class effective_wind(object):
             mer * np.cos(D) + zon * np.sin(D)
                 ) * np.sin(I)
 
-def run_igrf(df, dn):
-    dec = []
-    inc = []
-    total = []
-    for lat, lon, alt in zip(df.glat, df.glon, df.alt):
-        d, i, _, _, _, _, f = pyIGRF.igrf_value(
-            lat, 
-            lon, 
-            alt = alt, 
-            year = year_fraction(dn)
-            )
-        
-        dec.append(d)
-        inc.append(i)
-        total.append(f)
-        
-    return dec, inc, total
+
 
 def fluxtube_eff_wind(df, dn):
     
-    dec, inc, total = run_igrf(df, dn)
+    dec, inc, total = m.run_igrf(df, dn)
         
     df["d"] = dec
     df["i"] = inc
@@ -71,11 +57,16 @@ def fluxtube_eff_wind(df, dn):
     wind = effective_wind()
     
     df["zon_ef"] = wind.zonal(
-        df["zon"], df["mer"], df["d"]
+                df["zon"], 
+                df["mer"], 
+                df["d"]
         )
-    df["mer_ef"] = wind.meridional(
-        df["zon"], df["mer"], 
-        df["d"], df["i"]
+    
+    df["mer_ef"] = wind.meridional_perp(
+        df["zon"], 
+        df["mer"], 
+        df["d"], 
+        df["i"]
         )
     
     return df
