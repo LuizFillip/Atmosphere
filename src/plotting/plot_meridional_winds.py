@@ -67,7 +67,7 @@ def plot_meridional_winds():
     plt.subplots_adjust(hspace = 0.1)
     hems = ['south', 'north']
     
-    names = ['Sul', 'Norte']
+    
     for i, hem in enumerate(hems):
         
         df = set_data(hem)
@@ -76,28 +76,40 @@ def plot_meridional_winds():
         ax[i].plot(ds['mer_ef'], label = 'Paralelo a B')
         
         
-        letter = s.chars()[i]
-        ax[i].text(
-            0.02, 0.85, f"({letter}) {names[i]}", 
-            transform = ax[i].transAxes
-            )
-        ax[i].legend(loc = 'upper right')
-        ax[i].axhline(0, linestyle = '--')
         ax[i].set( 
-                  ylim = [-50, 50], 
-                  xlim = [df.index[0], df.index[-1]])
+                  ylim = [-70, 70], 
+                  xlim = [df.index[0], df.index[-1]]
+                  )
         
     ax[2].plot(sum_hems(), 
                label = ["Perpendicular a B", 
                         'Paralelo a B'])
-        
+    ax[0].legend( 
+        bbox_to_anchor = (0.5, 1.3), 
+        ncol = 2, 
+        loc = 'upper center'
+        )
+    
+    
     s.format_time_axes(ax[2])
     
-    fig.text(0.06, 0.4, 
+    fig.text(0.06, 0.35, 
              'Velocidade meridional (m/s)', 
              rotation = 'vertical')
     
+    names = ['Sul', 'Norte', 'Total']
+    for i, ax in enumerate(ax.flat):
+        ax.axhline(0, linestyle = '--')
+
+        letter = s.chars()[i]
+        ax.text(
+            0.02, 0.85, f"({letter}) {names[i]}", 
+            transform = ax.transAxes
+            )
+        
+    return fig
 
 
+fig = plot_meridional_winds()
 
-plot_meridional_winds()
+# fig.savefig("atmosphere/figures/meridional_winds_integrated.png", dpi = 300)
