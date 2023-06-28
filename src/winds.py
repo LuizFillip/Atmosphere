@@ -10,10 +10,10 @@ class effective_wind(object):
     Effective wind along and perpendicular of 
     magnetic field
     
-    Pag. 27 e 28 (Tese Ely, 2016)
-    
-    U_theta (mer) = meridional component (positiva para sul)
-    U_phi (zon) = zonal component (positiva para leste)
+     (Tese Ely, 2016; Nogueira, 2013)
+
+    U_theta (mer) = geographic meridional component (northward)
+    U_phi (zon) = geographiczonal component (eastward)
     
     """
     
@@ -52,7 +52,7 @@ def fluxtube_eff_wind(df, dn):
         
     df["d"] = dec
     df["i"] = inc
-    df["H"] = total
+    df["F"] = total
     
     wind = effective_wind()
     
@@ -62,7 +62,14 @@ def fluxtube_eff_wind(df, dn):
                 df["d"]
         )
     
-    df["mer_ef"] = wind.meridional_perp(
+    df["mer_perp"] = wind.meridional_perp(
+        df["zon"], 
+        df["mer"], 
+        df["d"], 
+        df["i"]
+        )
+    
+    df["mer_parl"] = wind.meridional_parl(
         df["zon"], 
         df["mer"], 
         df["d"], 
